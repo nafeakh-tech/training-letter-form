@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>طلب كتاب رسمي للتدريب</title>
+  <style>
+    body { font-family: 'Cairo', sans-serif; background:#f4f6f8; text-align:center; padding-top:40px; }
+    input { padding:10px; width:280px; margin:6px; border-radius:6px; border:1px solid #ccc; }
+    button { padding:10px 18px; background:#1c88e5; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <h2>طلب كتاب رسمي للتدريب</h2>
+  <form id="trainingForm">
+    <input name="studentName" placeholder="اسم الطالب" required><br>
+    <input name="studentId" placeholder="الرقم الجامعي" required><br>
+    <input name="companyName" placeholder="اسم الشركة" required><br>
+    <button type="submit">إنشاء الكتاب</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('trainingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const resDiv = document.getElementById('result');
+      resDiv.textContent = 'جاري إنشاء الكتاب...';
+
+      try {
+        const resp = await fetch('https://script.google.com/macros/s/AKfycbzPntQCiUycUgbkIjvdSlLL0Sa0TUvJpWWANM3Tzjj-PzNAiaPuGUJzvLO_a23CyQC9/exec', {
+          method: 'POST',
+          body: form
+        });
+        const data = await resp.json();
+        if (data.success) {
+          resDiv.innerHTML = `
+            <p>تم إنشاء الكتاب بنجاح — رقم: <b>${data.serial}</b></p>
+            <a href="${data.link}" target="_blank">فتح المستند</a>
+          `;
+        } else {
+          resDiv.textContent = data.message || 'حدث خطأ في الخدمة.';
+        }
+      } catch (err) {
+        console.error(err);
+        resDiv.textContent = 'خطأ أثناء الاتصال بالخدمة.';
+      }
+    });
+  </script>
+</body>
+</html>
