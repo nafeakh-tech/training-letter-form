@@ -4,16 +4,18 @@
   <meta charset="utf-8">
   <title>طلب كتاب رسمي للتدريب</title>
   <style>
-    body { font-family: 'Cairo', sans-serif; background:#f4f6f8; text-align:center; padding-top:40px; }
-    input { padding:10px; width:280px; margin:6px; border-radius:6px; border:1px solid #ccc; }
-    button { padding:10px 18px; background:#1c88e5; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+    body { font-family: 'Cairo', sans-serif; background:#f8f9fb; text-align:center; padding-top:50px; }
+    input { padding:10px; width:300px; margin:6px; border-radius:6px; border:1px solid #ccc; text-align:center; }
+    button { padding:10px 22px; background:#1976d2; color:white; border:none; border-radius:6px; cursor:pointer; }
+    button:hover { background:#0f5ba6; }
+    .card { margin-top:20px; background:#fff; padding:15px; border-radius:10px; box-shadow:0 0 6px rgba(0,0,0,0.1); display:inline-block; }
   </style>
 </head>
 <body>
   <h2>طلب كتاب رسمي للتدريب</h2>
   <form id="trainingForm">
-    <input name="studentName" placeholder="اسم الطالب" required><br>
     <input name="studentId" placeholder="الرقم الجامعي" required><br>
+    <input name="studentName" placeholder="اسم الطالب" required><br>
     <input name="companyName" placeholder="اسم الشركة" required><br>
     <button type="submit">إنشاء الكتاب</button>
   </form>
@@ -21,29 +23,31 @@
   <div id="result"></div>
 
   <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxArJhOa6h2qhnSsTFm7TGQHOoLlzjWD4BuO0OKMyf9oil-aIb9MlQVPpAyDmVjKidp/exec';
+
     document.getElementById('trainingForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const form = new FormData(e.target);
       const resDiv = document.getElementById('result');
-      resDiv.textContent = 'جاري إنشاء الكتاب...';
+      resDiv.textContent = 'جاري التحقق من الرقم وإنشاء الكتاب...';
 
       try {
-        const resp = await fetch('https://script.google.com/macros/s/AKfycbzPntQCiUycUgbkIjvdSlLL0Sa0TUvJpWWANM3Tzjj-PzNAiaPuGUJzvLO_a23CyQC9/exec', {
-          method: 'POST',
-          body: form
-        });
+        const resp = await fetch(scriptURL, { method: 'POST', body: form });
         const data = await resp.json();
+
         if (data.success) {
           resDiv.innerHTML = `
-            <p>تم إنشاء الكتاب بنجاح —راجع مشرف التدريب رقم: <b>${data.serial}</b></p>
-         <!--   <a href="${data.link}" target="_blank">فتح المستند</a> -->
-          `;
+            <div class="card">
+              <h3>تم إنشاء الكتاب بنجاح ✅</h3>
+              <p>رقم الكتاب: <b>${data.serial}</b></p>
+              <a href="${data.link}" target="_blank">فتح المستند</a>
+            </div>`;
         } else {
-          resDiv.textContent = data.message || 'حدث خطأ في الخدمة.';
+          resDiv.innerHTML = `<p style="color:red;">${data.message}</p>`;
         }
       } catch (err) {
         console.error(err);
-        resDiv.textContent = 'خطأ أثناء الاتصال بالخدمة.';
+        resDiv.innerHTML = `<p style="color:red;">حدث خطأ أثناء الاتصال بالخدمة.</p>`;
       }
     });
   </script>
