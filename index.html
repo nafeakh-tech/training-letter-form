@@ -16,7 +16,16 @@
   <form id="trainingForm">
     <input name="studentId" placeholder="الرقم الجامعي" required><br>
     <input name="studentName" placeholder=" اسم الطالب الرباعي" required><br>
-    <input name="specialization" placeholder=" التخصص" required><br>
+    <select name="specialization" required>
+      <option value="" disabled selected>-- اختر التخصص --</option>
+      <option value="الذكاء الاصطناعي">الذكاء الاصطناعي</option>
+      <option value="علم الحاسوب">علم الحاسوب</option>
+      <option value="أنظمة المعلومات الحاسوبية">أنظمة المعلومات الحاسوبية</option>
+      <option value="الأمن السيبراني">الأمن السيبراني</option>
+      <option value="علم البيانات">علم البيانات</option>
+      <option value="تكنولوجيا معلومات الاعمال">تكنولوجيا معلومات الاعمال</option>
+
+</select><br>
     <input name="companyName" placeholder=" اسم الشركة الرسمي" required><br>
     <input name="phone" placeholder="رقم الهاتف (07XXXXXXXX)" required pattern="07[0-9]{8}" title="يجب أن يبدأ بـ07 ويتكوّن من 10 أرقام"><br>
     <button type="submit">إنشاء الكتاب</button>
